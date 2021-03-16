@@ -76,7 +76,7 @@ function sendMessage(){
  * @param {string} msg - User message
  */
 function getNextStory(msg){
-    $.post('sms', {
+    $.post('sms/', {
         body: msg,
         dataType:"xml",
         from: getPhoneNumber()
