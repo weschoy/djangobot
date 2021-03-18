@@ -8,14 +8,17 @@ class Order(models.Model):
     def handleInput(self, sInput):
         aReturn = []
         sState=self.data["state"]
+        self.nPrice=0
         if sState=="WELCOMING":
-            aReturn.append("Welcome to Wesley's pizza")
+            aReturn.append("Welcome to Wesley's pie shop")
             aReturn.append("Would you like a SMALL, MEDIUM, or LARGE?")
+            aReturn.append("SMALL is $5, MEDIUM is $9, LARGE is $15")
             self.data["state"]="SIZE"
         elif sState=="SIZE":
-            self.data["size"]=sInput.lower()
+            self.data["size"]=sInput.lower()         
             aReturn.append("What toppings would you like?")
             aReturn.append("Please enter a list with commas")
+            aReturn.append("+$2 per each topping")
             self.data["state"]="TOPPINGS"
         elif sState=="TOPPINGS":
             self.data["toppings"]=sInput.lower()
@@ -25,13 +28,30 @@ class Order(models.Model):
         elif sState=="DRINKS":
             if sInput.lower() !="no":
                 self.data["drinks"]=sInput.lower()
+                aReturn.append("+$2 per each drink")
+            nDrinks=self.data["drinks"].split(",")
+            for x in nDrinks:
+                self.nPrice+=2
+            nToppings=self.data["toppings"].split(",")
+            for x in nToppings:
+                self.nPrice+=2
+            if self.data["size"]=="small":
+                self.nPrice+=5
+            elif self.data["size"]=="medium":
+                self.nPrice+=9
+            elif self.data["size"]=="large":
+                self.nPrice+=14   
+            
             aReturn.append("Thank you for your order")
-            aReturn.append(self.data["size"]+" pizza with "+self.data["toppings"])
+            aReturn.append(self.data["size"]+" pie with "+self.data["toppings"])
+
             try:
                 aReturn.append(self.data["drinks"])
             except:
                 pass
             aReturn.append("Please pick up in 20 minutes")
+            aReturn.append("The price is $"+str(self.nPrice))
+
             self.data["state"]="DONE"
         return aReturn
     def isDone(self):
