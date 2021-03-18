@@ -13,7 +13,10 @@ class SMSView(TemplateView):
         try:
             oOrder = Order.objects.get(phone = oPost['from'])
         except:
-            oOrder = Order(phone = oPost['from'], data=dict())
+            oOrder = Order(phone = oPost['from'], data={"state":"WELCOMING"})
         context['aReturn'] = oOrder.handleInput(oPost['body'])
-        oOrder.save()
+        if oOrder.isDone():
+            oOrder.delete()
+        else:
+            oOrder.save()
         return self.render_to_response(context)

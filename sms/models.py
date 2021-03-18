@@ -14,3 +14,5 @@ class Order(models.Model):
         except:
             self.data['sInput'] = sInput
         return aReturn
+    def isDone(self):
+        return True
