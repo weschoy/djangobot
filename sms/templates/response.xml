@@ -1,4 +1,1 @@
-<Response>
-<Message>Rich was here!</Message>
-<Message>So there</Message>
-</Response>
+<Response>{% for sMessage in aReturn %}<Message>{{sMessage}}</Message>{% endfor %}</Response>

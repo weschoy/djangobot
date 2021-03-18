@@ -1,6 +1,7 @@
 # Create your views here.
 
 from django.views.generic import TemplateView
+from sms.models import Order
 
 
 class SMSView(TemplateView):
@@ -8,4 +9,11 @@ class SMSView(TemplateView):
     content_type = "text/xml"
     def post(self, request, *args, **kwargs):
         context = dict()
+        oPost = request.POST.copy()
+        try:
+            oOrder = Order.objects.get(phone = oPost['from'])
+        except:
+            oOrder = Order(phone = oPost['from'], data=dict())
+        context['aReturn'] = oOrder.handleInput(oPost['body'])
+        oOrder.save()
         return self.render_to_response(context)
